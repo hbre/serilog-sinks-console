@@ -12,8 +12,8 @@ namespace Serilog.Sinks.Console.Tests.Formatting
     {
         class TestThemedJsonValueFormatter : ThemedJsonValueFormatter
         {
-            public TestThemedJsonValueFormatter()
-                : base(ConsoleTheme.None, null)
+            public TestThemedJsonValueFormatter(bool skipNullValues = false)
+                : base(ConsoleTheme.None, null, skipNullValues)
             {
             }
 
@@ -81,7 +81,7 @@ namespace Serilog.Sinks.Console.Tests.Formatting
             JsonLiteralTypesAreFormatted(123.45m, "123.45");
         }
 
-        static string Format(LogEventPropertyValue value)
+        static string Format(LogEventPropertyValue value, bool skip = false)
         {
             var formatter = new TestThemedJsonValueFormatter();
             var output = new StringWriter();
@@ -122,6 +122,23 @@ namespace Serilog.Sinks.Console.Tests.Formatting
             var f = Format(dict);
             Assert.Equal("{\"12\": 345}", f);
         }
+
+        //[Theory]
+        //[InlineData(true)]
+        //[InlineData(false)]
+        //public void DictionaryWithScalarKeySkipsNull(bool skipNullValuesInOutput)
+        //{
+        //    var dict = new DictionaryValue(new Dictionary<ScalarValue, LogEventPropertyValue>
+        //    {
+        //        { new ScalarValue(12), null },
+        //    });
+
+        //    var f = Format(dict, skipNullValuesInOutput);
+        //    if (skipNullValuesInOutput)
+        //        Assert.Equal("{}", f);
+        //    else 
+        //        Assert.Equal("{\"12\": null}", f);
+        //}
 
         [Fact]
         public void SequencesOfSequencesAreFormatted()

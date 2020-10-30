@@ -13,7 +13,7 @@ namespace Serilog.Sinks.Console.Tests.Formatting
         [InlineData("Hello", "l", "Hello")]
         public void StringFormattingIsApplied(string value, string format, string expected)
         {
-            var formatter = new ThemedDisplayValueFormatter(ConsoleTheme.None, null);
+            var formatter = new ThemedDisplayValueFormatter(ConsoleTheme.None, null, false);
             var sw = new StringWriter();
             formatter.FormatLiteralValue(new ScalarValue(value), sw, format);
             var actual = sw.ToString();

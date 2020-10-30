@@ -128,7 +128,7 @@ namespace Serilog.Sinks.Console.Tests.Rendering
             var output = new StringBuilder();
             var writer = new StringWriter(output);
             var renderer = new ThemedMessageTemplateRenderer(ConsoleTheme.None,
-                new ThemedDisplayValueFormatter(ConsoleTheme.None, formatProvider), false);
+                new ThemedDisplayValueFormatter(ConsoleTheme.None, formatProvider, false), false);
             renderer.Render(mt, props.ToDictionary(p => p.Name, p => p.Value), writer);
             writer.Flush();
             return output.ToString();

@@ -23,16 +23,18 @@ namespace Serilog.Sinks.SystemConsole.Formatting
     class ThemedDisplayValueFormatter : ThemedValueFormatter
     {
         readonly IFormatProvider _formatProvider;
+        private readonly bool _skipNullValues;
 
-        public ThemedDisplayValueFormatter(ConsoleTheme theme, IFormatProvider formatProvider)
+        public ThemedDisplayValueFormatter(ConsoleTheme theme, IFormatProvider formatProvider, bool skipNullValues)
             : base(theme)
         {
             _formatProvider = formatProvider;
+            _skipNullValues = skipNullValues;
         }
 
         public override ThemedValueFormatter SwitchTheme(ConsoleTheme theme)
         {
-            return new ThemedDisplayValueFormatter(theme, _formatProvider);
+            return new ThemedDisplayValueFormatter(theme, _formatProvider, _skipNullValues);
         }
 
         protected override int VisitScalarValue(ThemedValueFormatterState state, ScalarValue scalar)
@@ -124,6 +126,9 @@ namespace Serilog.Sinks.SystemConsole.Formatting
             var delim = string.Empty;
             foreach (var element in dictionary.Elements)
             {
+                if (element.Value.ToString() == "null" && _skipNullValues)
+                    continue;
+
                 if (delim.Length != 0)
                 {
                     using (ApplyStyle(state.Output, ConsoleThemeStyle.TertiaryText, ref count))
