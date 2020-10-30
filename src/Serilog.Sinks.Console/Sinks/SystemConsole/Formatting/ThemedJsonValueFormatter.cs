@@ -25,17 +25,19 @@ namespace Serilog.Sinks.SystemConsole.Formatting
     {
         readonly ThemedDisplayValueFormatter _displayFormatter;
         readonly IFormatProvider _formatProvider;
+        private readonly bool _skipNullValues;
 
-        public ThemedJsonValueFormatter(ConsoleTheme theme, IFormatProvider formatProvider)
+        public ThemedJsonValueFormatter(ConsoleTheme theme, IFormatProvider formatProvider, bool skipNullValues)
             : base(theme)
         {
-            _displayFormatter = new ThemedDisplayValueFormatter(theme, formatProvider);
+            _displayFormatter = new ThemedDisplayValueFormatter(theme, formatProvider, skipNullValues);
             _formatProvider = formatProvider;
+            _skipNullValues = skipNullValues;
         }
 
         public override ThemedValueFormatter SwitchTheme(ConsoleTheme theme)
         {
-            return new ThemedJsonValueFormatter(theme, _formatProvider);
+            return new ThemedJsonValueFormatter(theme, _formatProvider, _skipNullValues);
         }
 
         protected override int VisitScalarValue(ThemedValueFormatterState state, ScalarValue scalar)
@@ -139,6 +141,12 @@ namespace Serilog.Sinks.SystemConsole.Formatting
             var delim = string.Empty;
             foreach (var element in dictionary.Elements)
             {
+                if (element.Value == null && _skipNullValues)
+                    continue;
+
+                if (element.Value != null && element.Value.ToString() == "null" && _skipNullValues)
+                    continue;
+
                 if (delim.Length != 0)
                 {
                     using (ApplyStyle(state.Output, ConsoleThemeStyle.TertiaryText, ref count))
@@ -158,7 +166,6 @@ namespace Serilog.Sinks.SystemConsole.Formatting
 
                 using (ApplyStyle(state.Output, ConsoleThemeStyle.TertiaryText, ref count))
                     state.Output.Write(": ");
-
                 count += Visit(state.Nest(), element.Value);
             }
 

@@ -28,7 +28,7 @@ namespace Serilog.Sinks.SystemConsole.Output
         readonly PropertyToken _token;
         readonly ThemedMessageTemplateRenderer _renderer;
 
-        public MessageTemplateOutputTokenRenderer(ConsoleTheme theme, PropertyToken token, IFormatProvider formatProvider)
+        public MessageTemplateOutputTokenRenderer(ConsoleTheme theme, PropertyToken token, IFormatProvider formatProvider, bool skipNullValues)
         {
             _theme = theme ?? throw new ArgumentNullException(nameof(theme));
             _token = token ?? throw new ArgumentNullException(nameof(token));
@@ -46,8 +46,8 @@ namespace Serilog.Sinks.SystemConsole.Output
             }
 
             var valueFormatter = isJson
-                ? (ThemedValueFormatter)new ThemedJsonValueFormatter(theme, formatProvider)
-                : new ThemedDisplayValueFormatter(theme, formatProvider);
+                ? (ThemedValueFormatter)new ThemedJsonValueFormatter(theme, formatProvider, skipNullValues)
+                : new ThemedDisplayValueFormatter(theme, formatProvider, skipNullValues);
 
             _renderer = new ThemedMessageTemplateRenderer(theme, valueFormatter, isLiteral);
         }

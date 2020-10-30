@@ -74,7 +74,7 @@ namespace Serilog
 
             syncRoot = syncRoot ?? DefaultSyncRoot;
 
-            var formatter = new OutputTemplateRenderer(appliedTheme, outputTemplate, formatProvider);
+            var formatter = new OutputTemplateRenderer(appliedTheme, outputTemplate, formatProvider, skipNullValuesInOutput);
             return sinkConfiguration.Sink(new ConsoleSink(appliedTheme, formatter, standardErrorFromLevel, syncRoot), restrictedToMinimumLevel, levelSwitch);
         }
 

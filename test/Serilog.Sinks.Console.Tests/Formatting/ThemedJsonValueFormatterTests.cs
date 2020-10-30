@@ -12,8 +12,8 @@ namespace Serilog.Sinks.Console.Tests.Formatting
     {
         class TestThemedJsonValueFormatter : ThemedJsonValueFormatter
         {
-            public TestThemedJsonValueFormatter()
-                : base(ConsoleTheme.None, null)
+            public TestThemedJsonValueFormatter(bool skipNullValues = false)
+                : base(ConsoleTheme.None, null, skipNullValues)
             {
             }
 
@@ -81,7 +81,7 @@ namespace Serilog.Sinks.Console.Tests.Formatting
             JsonLiteralTypesAreFormatted(123.45m, "123.45");
         }
 
-        static string Format(LogEventPropertyValue value)
+        static string Format(LogEventPropertyValue value, bool skip = false)
         {
             var formatter = new TestThemedJsonValueFormatter();
             var output = new StringWriter();

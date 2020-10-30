@@ -27,7 +27,8 @@ namespace Serilog.Sinks.SystemConsole.Output
     {
         readonly OutputTemplateTokenRenderer[] _renderers;
 
-        public OutputTemplateRenderer(ConsoleTheme theme, string outputTemplate, IFormatProvider formatProvider)
+        public OutputTemplateRenderer(ConsoleTheme theme, string outputTemplate, IFormatProvider formatProvider,
+            bool skipNullValuesInOutput = false)
         {
             if (outputTemplate is null) throw new ArgumentNullException(nameof(outputTemplate));
             var template = new MessageTemplateParser().Parse(outputTemplate);
@@ -56,7 +57,7 @@ namespace Serilog.Sinks.SystemConsole.Output
                 }
                 else if (pt.PropertyName == OutputProperties.MessagePropertyName)
                 {
-                    renderers.Add(new MessageTemplateOutputTokenRenderer(theme, pt, formatProvider));
+                    renderers.Add(new MessageTemplateOutputTokenRenderer(theme, pt, formatProvider, skipNullValuesInOutput));
                 }
                 else if (pt.PropertyName == OutputProperties.TimestampPropertyName)
                 {
@@ -64,7 +65,7 @@ namespace Serilog.Sinks.SystemConsole.Output
                 }
                 else if (pt.PropertyName == "Properties")
                 {
-                    renderers.Add(new PropertiesTokenRenderer(theme, pt, template, formatProvider));
+                    renderers.Add(new PropertiesTokenRenderer(theme, pt, template, formatProvider, skipNullValuesInOutput));
                 }
                 else
                 {

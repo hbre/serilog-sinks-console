@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Xunit;
 using Serilog.Sinks.SystemConsole.Themes;
+using System.Collections.Generic;
 
 namespace Serilog.Sinks.Console.Tests.Configuration
 {
