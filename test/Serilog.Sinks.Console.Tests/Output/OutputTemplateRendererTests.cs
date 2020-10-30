@@ -183,6 +183,30 @@ namespace Serilog.Sinks.Console.Tests.Output
             }
         }
 
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void SkipNullValuesInOutputJson(bool skipNullValuesInOutput)
+        {
+            var formatter = new OutputTemplateRenderer(ConsoleTheme.None, "{Message:j}", CultureInfo.InvariantCulture, skipNullValuesInOutput);
+            var evt = DelegatingSink.GetLogEvent(l => l.Information("Dictionary: {@Size}", new Dictionary<string, object>() { { "FirstKey", new DateTime(2020, 12, 24) }, { "SecondKey", null } }));
+            var sw = new StringWriter();
+            formatter.Format(evt, sw);
+            Assert.Equal($"Dictionary: {{\"FirstKey\": \"2020-12-24T00:00:00.0000000\"{(skipNullValuesInOutput ? "" : ", \"SecondKey\": null")}}}", sw.ToString());
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void SkipNullValuesInOutput(bool skipNullValuesInOutput)
+        {
+            var formatter = new OutputTemplateRenderer(ConsoleTheme.None, "{Message}", CultureInfo.InvariantCulture, skipNullValuesInOutput);
+            var evt = DelegatingSink.GetLogEvent(l => l.Information("Dictionary: {@Size}", new Dictionary<string, object>() { { "FirstKey", new DateTime(2020, 12, 24) }, { "SecondKey", null } }));
+            var sw = new StringWriter();
+            formatter.Format(evt, sw);
+            Assert.Equal($"Dictionary: {{[\"FirstKey\"]=12/24/2020 00:00:00{(skipNullValuesInOutput ? "" : ", [\"SecondKey\"]=null")}}}", sw.ToString());
+        }
+
         [Fact]
         public void AppliesCustomFormatterToEnums()
         {
@@ -192,6 +216,22 @@ namespace Serilog.Sinks.Console.Tests.Output
             formatter.Format(evt, sw);
             Assert.Equal("Size Huge", sw.ToString());
         }
+
+
+        //[Theory]
+        //[InlineData(true)]
+        //[InlineData(false)]
+        //public void SkipNullValuesNonMessagePropertiesAreRendered(bool skipNullValuesInOutput)
+        //{
+        //    var formatter = new OutputTemplateRenderer(ConsoleTheme.None, "{Properties}", CultureInfo.InvariantCulture, skipNullValuesInOutput);
+        //    var evt = DelegatingSink.GetLogEvent(l => l.ForContext("Foo", null).Information("Hello from {Bar}!", "bar"));
+        //    var sw = new StringWriter();
+        //    formatter.Format(evt, sw);
+        //    if (skipNullValuesInOutput)
+        //        Assert.Equal("{}", sw.ToString());
+        //    else
+        //        Assert.Equal("{Foo=null}", sw.ToString());
+        //}
 
         [Fact]
         public void NonMessagePropertiesAreRendered()

@@ -42,6 +42,7 @@ namespace Serilog
         /// <param name="syncRoot">An object that will be used to `lock` (sync) access to the console output. If you specify this, you
         /// will have the ability to lock on this object, and guarantee that the console sink will not be about to output anything while
         /// the lock is held.</param>
+        /// <param name="skipNullValuesInOutput">Skips Elements that are null in Output</param>
         /// <param name="formatProvider">Supplies culture-specific formatting information, or null.</param>
         /// <param name="levelSwitch">A switch allowing the pass-through minimum level
         /// to be changed at runtime.</param>
@@ -61,7 +62,8 @@ namespace Serilog
             LogEventLevel? standardErrorFromLevel = null,
             ConsoleTheme theme = null, 
             bool applyThemeToRedirectedOutput = false,
-            object syncRoot = null)
+            object syncRoot = null,
+            bool skipNullValuesInOutput = false)
         {
             if (sinkConfiguration is null) throw new ArgumentNullException(nameof(sinkConfiguration));
             if (outputTemplate is null) throw new ArgumentNullException(nameof(outputTemplate));

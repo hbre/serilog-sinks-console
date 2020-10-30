@@ -123,6 +123,23 @@ namespace Serilog.Sinks.Console.Tests.Formatting
             Assert.Equal("{\"12\": 345}", f);
         }
 
+        //[Theory]
+        //[InlineData(true)]
+        //[InlineData(false)]
+        //public void DictionaryWithScalarKeySkipsNull(bool skipNullValuesInOutput)
+        //{
+        //    var dict = new DictionaryValue(new Dictionary<ScalarValue, LogEventPropertyValue>
+        //    {
+        //        { new ScalarValue(12), null },
+        //    });
+
+        //    var f = Format(dict, skipNullValuesInOutput);
+        //    if (skipNullValuesInOutput)
+        //        Assert.Equal("{}", f);
+        //    else 
+        //        Assert.Equal("{\"12\": null}", f);
+        //}
+
         [Fact]
         public void SequencesOfSequencesAreFormatted()
         {
